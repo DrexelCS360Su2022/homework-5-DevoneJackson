@@ -15,41 +15,69 @@ isThisWorking = "Yes"
 --
 
 lastDigit :: Integer -> Integer
-lastDigit = error "lastDigit not yet defined"
+lastDigit n = mod n 10
 
 dropLastDigit :: Integer -> Integer
-dropLastDigit = error "dropLastDigit not yet defined"
+dropLastDigit n | n < 10  = 0
+                | otherwise = div n 10
 
 toDigits :: Integer -> [Integer]
-toDigits = error "toDigits not yet defined"
+toDigits n =  reverse (toDigitsHelper n)
+
+toDigitsHelper :: Integer -> [Integer]
+toDigitsHelper n | n <= 0    = []
+	         | otherwise = (mod n 10) : (toDigitsHelper (div n 10))
+
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther = error "doubleEveryOther not yet defined"
+doubleEveryOther l = reverse (doubleHelper 0 (reverse l))
+
+doubleHelper :: Int -> [Integer] -> [Integer]
+doubleHelper n l       | n >= (length l)   = []
+                       | (mod n 2) /= 0    = ((l !! n) * 2) : (doubleHelper (n + 1) l)
+		       | otherwise         = (l !! n) : (doubleHelper (n + 1) l)
 
 sumDigits :: [Integer] -> Integer
-sumDigits = error "sumDigits not yet defined"
+sumDigits l | l == [] 		= 0
+            | otherwise 	= (sumInner (toDigits (head l))) + (sumDigits (tail l))
+
+sumInner :: [Integer] -> Integer
+sumInner l  | l == []           = 0
+            | otherwise         = (head l) + (sumInner (tail l))
+
 
 validate :: Integer -> Bool
-validate = error "validate not yet defined"
+validate n =  ((mod (sumDigits (doubleEveryOther (toDigits n))) 10) == 0)
 
 --
 -- Problem 2
 --
 
 pow :: (a -> a) -> Int -> a -> a
-pow = error "pow not yet defined"
+pow f n x | n == 0          = x
+          | otherwise       = f (pow f (n - 1) x)
+
+
 
 g :: Integer -> Integer
-g = error "g not yet defined"
+g n | n == 0         = 0
+    | otherwise      = n - (pow g 2 (n - 1))
+
+
 
 h :: Integer -> Integer
-h = error "h not yet defined"
+h n  | n == 0       = 0
+     | otherwise    = n - (pow h 3 (n - 1))
+
+
 
 d :: Int -> Integer -> Integer
-d = error "d not yet defined"
+d i n  | n == 0         = 0
+       | otherwise      = n - pow (d i ) i (n - 1)
 
 --
 -- Problem 3
 --
-
-powerSet = error "powerSet not yet defined"
+powerSet :: Ord a => Set a -> Set a
+powerSet s       | isEmpty s         = empty
+                 | otherwise         = (union (powerSet (snd (split s))) (mapSet  (union (singleton (fst (split s)))) (powerSet (snd (split s)))))
